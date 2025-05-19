@@ -6,13 +6,13 @@ def show():
     Display the research papers page.
     """
     st.title("Relevant Research Papers")
-    
+
     st.markdown("""
     ## Key Research by the Team
-    
+
     Understanding the team's research will help you prepare for the interview and demonstrate your knowledge of their work.
     """)
-    
+
     papers = [
         {
             "title": "Determining Quality of Forensic Injury Imaging: George Mason University Secures NIH Aim-Ahead Supplement",
@@ -47,20 +47,20 @@ def show():
             "url": "https://doi.org/10.1016/j.forsciint.2023.111702"
         }
     ]
-    
+
     papers_df = pd.DataFrame(papers)
-    
+
     for i, paper in papers_df.iterrows():
         with st.expander(f"{paper['title']} ({paper['year']})"):
             st.markdown(f"**Authors:** {paper['authors']}")
             st.markdown(f"**Publication:** {paper['publication']}")
             st.markdown(f"**Key Findings:** {paper['key_findings']}")
             st.markdown(f"**URL:** [{paper['url']}]({paper['url']})")
-    
+
     st.markdown("""
     ## Related Research in Bruise Detection and Medical Imaging
     """)
-    
+
     related_papers = [
         {
             "title": "Computer Vision Applications in Health Care: Dataset and Algorithm Bias",
@@ -91,19 +91,19 @@ def show():
             "relevance": "Discusses mobile technology deployment for intimate partner violence contexts."
         }
     ]
-    
+
     related_df = pd.DataFrame(related_papers)
-    
+
     for i, paper in related_df.iterrows():
         with st.expander(f"{paper['title']} ({paper['year']})"):
             st.markdown(f"**Authors:** {paper['authors']}")
             st.markdown(f"**Publication:** {paper['publication']}")
             st.markdown(f"**Relevance:** {paper['relevance']}")
-    
+
     st.markdown("""
     ## Technical Papers Relevant to the Project
     """)
-    
+
     tech_papers = [
         {
             "title": "U-Net: Convolutional Networks for Biomedical Image Segmentation",
@@ -134,45 +134,45 @@ def show():
             "relevance": "Visualization technique for model explanations, important for clinical adoption and legal contexts."
         }
     ]
-    
+
     tech_df = pd.DataFrame(tech_papers)
-    
+
     for i, paper in tech_df.iterrows():
         with st.expander(f"{paper['title']} ({paper['year']})"):
             st.markdown(f"**Authors:** {paper['authors']}")
             st.markdown(f"**Publication:** {paper['publication']}")
             st.markdown(f"**Relevance:** {paper['relevance']}")
-    
+
     st.markdown("""
     ## Interview Preparation Reading List
-    
+
     ### Essential Papers (High Priority):
-    
+
     1. **Detection of Inflicted Bruises by Alternate Light** (Scafide et al., 2020)
        - Core research demonstrating ALS effectiveness
-    
+
     2. **Mason Receives $4.85 Million Gift** (GMU News, 2024)
        - Latest project funding and goals
-    
+
     3. **Determining Quality of Forensic Injury Imaging** (HAP News, 2024)
        - NIH AIM-AHEAD equity focus
-    
+
     ### Technical Background (Medium Priority):
-    
+
     1. **Computer Vision Applications in Health Care: Dataset and Algorithm Bias**
        - Understanding bias in medical imaging
-    
+
     2. **U-Net: Convolutional Networks for Biomedical Image Segmentation**
        - Fundamental architecture for medical segmentation
-    
+
     3. **On Fairness and Calibration**
        - Metrics for equitable AI systems
-    
+
     ### Broader Context (Lower Priority):
-    
+
     1. **Mobile Health Applications for Violence Prevention and Response**
        - Understanding the clinical application context
-    
+
     2. **Multi-spectral Imaging in Dermatology**
        - Related imaging techniques
     """)

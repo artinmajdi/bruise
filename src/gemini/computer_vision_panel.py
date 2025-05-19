@@ -165,10 +165,10 @@ class ComputerVisionPanel:
 
 		with col2:
 			st.markdown("**Simulated Skin Image**")
-			st.image(original_image, caption="Simulated View", use_column_width=True)
+			st.image(original_image, caption="Simulated View", use_container_width=True)
 
 			st.markdown("**Simulated Segmentation Mask**")
-			st.image(segmented_mask, caption="Conceptual Segmentation Output (White = Bruise)", use_column_width=True, channels="L")
+			st.image(segmented_mask, caption="Conceptual Segmentation Output (White = Bruise)", use_container_width=True, channels="L")
 
 		st.markdown("---")
 		st.subheader("Algorithmic Approach Considerations")

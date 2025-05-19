@@ -6,11 +6,12 @@
 from . import assets
 from . import components
 from . import pages
+from .convert_svg import convert_svg_to_png
 
 __all__ = [
     'app',
     'assets',
     'components',
     'pages',
-    'convert_svg'
+    'convert_svg_to_png'
 ]

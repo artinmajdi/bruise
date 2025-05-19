@@ -2,12 +2,12 @@ import streamlit as st
 import logging
 
 # Import panel functions from other modules
-from gemini.computer_vision_panel import ComputerVisionPanel
-from gemini.fairness_panel import FairnessPanel
-from gemini.data_engineering_panel import DataEngineeringPanel
-from gemini.mobile_deployment_panel import MobileDeploymentPanel
-from gemini.leadership_panel import LeadershipPanel
-from gemini.funding_impact_panel import FundingImpactPanel
+from computer_vision_panel import ComputerVisionPanel
+from fairness_panel import FairnessPanel
+from data_engineering_panel import DataEngineeringPanel
+from mobile_deployment_panel import MobileDeploymentPanel
+from leadership_panel import LeadershipPanel
+from funding_impact_panel import FundingImpactPanel
 
 
 logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')

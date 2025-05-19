@@ -1,12 +1,34 @@
-# claude1/__init__.py
+from .pages import (
+    HomePage,
+    ComputerVisionPage,
+    FairnessPage,
+    DataEngineeringPage,
+    MobileDeploymentPage,
+    LeadershipPage,
+    FundingPage
+)
 
-"""Claude 1 module for bruise detection project."""
+from .core.data_module import DatabaseSchema, FHIRDataModel
+from .core.deployment_module import DeploymentComparison
+from .core.fairness_module import FairnessMetrics, generate_fairness_report
+from .core.leadership_module import TeamManagement
+from .core.vision_module import BruiseDetectionModel, apply_als_filter, preprocess_image
 
 __all__ = [
-    'app',
-    'data_module',
-    'deployment_module',
-    'fairness_module',
-    'leadership_module',
-    'vision_module'
+    'HomePage',
+    'ComputerVisionPage',
+    'FairnessPage',
+    'DataEngineeringPage',
+    'MobileDeploymentPage',
+    'LeadershipPage',
+    'FundingPage',
+    'DatabaseSchema',
+    'FHIRDataModel',
+    'DeploymentComparison',
+    'FairnessMetrics',
+    'generate_fairness_report',
+    'TeamManagement',
+    'BruiseDetectionModel',
+    'apply_als_filter',
+    'preprocess_image'
 ]

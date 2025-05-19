@@ -8,16 +8,16 @@ def convert_svg_to_png():
         # Read SVG file
         with open('assets/als_diagram.svg', 'rb') as svg_file:
             svg_data = svg_file.read()
-        
+
         # Convert to PNG
         png_data = cairosvg.svg2png(bytestring=svg_data)
-        
+
         # Save PNG
         with open('assets/als_diagram.png', 'wb') as png_file:
             png_file.write(png_data)
-        
+
         print("Successfully converted SVG to PNG")
-    
+
     except Exception as e:
         print(f"Error converting SVG to PNG: {e}")
         # Create a fallback image with text

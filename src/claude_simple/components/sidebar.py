@@ -6,13 +6,13 @@ def create_sidebar():
     """
     with st.sidebar:
         st.title("Interview Prep Dashboard")
-        
+
         # Try to display ALS diagram image if it exists
         try:
-            st.image("assets/als_diagram.png", use_column_width=True)
+            st.image("assets/als_diagram.png", use_container_width=True)
         except:
             st.info("ALS diagram visualization")
-        
+
         # Navigation options
         selected = st.radio(
             "Navigate to:",
@@ -25,11 +25,11 @@ def create_sidebar():
                 "Research Papers"
             ]
         )
-        
+
         st.sidebar.markdown("---")
         st.sidebar.info(
             "This dashboard helps prepare for the GMU Postdoc interview "
             "on the Equitable and Accessible Software for Injury Detection (EAS-ID) project."
         )
-    
+
     return selected

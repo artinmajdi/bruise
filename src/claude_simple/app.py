@@ -2,15 +2,16 @@ import streamlit as st
 from components.sidebar import create_sidebar
 import importlib
 
+
 def main():
     st.set_page_config(
         page_title="Bruise Detection Postdoc Interview Prep",
         page_icon="🏥",
         layout="wide",
     )
-    
+
     page = create_sidebar()
-    
+
     # Dynamically import and display the selected page
     try:
         page_module = importlib.import_module(f"pages.{page.lower().replace(' ', '_')}")
