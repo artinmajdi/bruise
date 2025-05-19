@@ -1,14 +1,15 @@
 
 import numpy as np
 import pandas as pd
+import io
+import base64
+import json
+import streamlit as st
+from PIL import Image, ImageEnhance, ImageFilter, ImageOps
 import matplotlib.pyplot as plt
 import plotly.express as px
 import plotly.graph_objects as go
-from PIL import Image, ImageEnhance, ImageFilter, ImageOps
-import io
-import base64
 from datetime import datetime
-import json
 
 # Import our custom modules
 from vision_module import BruiseDetectionModel, preprocess_image, apply_als_filter
@@ -16,7 +17,9 @@ from fairness_module import FairnessMetrics, generate_fairness_report
 from data_module import DatabaseSchema, FHIRDataModel
 from deployment_module import DeploymentComparison
 from leadership_module import TeamManagement
-from funding_module import FundingStrategy
+# from funding_module import FundingStrategy
+
+
 
 # Set page configuration
 st.set_page_config(
@@ -35,7 +38,7 @@ class InterviewPrepDashboard:
 		self.fhir_model = FHIRDataModel()
 		self.deployment_comparison = DeploymentComparison()
 		self.team_management = TeamManagement()
-		self.funding_strategy = FundingStrategy()
+		# self.funding_strategy = FundingStrategy()
 
 	def run(self):
 		# Add custom CSS
@@ -332,7 +335,7 @@ class InterviewPrepDashboard:
 					marker=dict(size=40, color='rgba(0, 102, 51, 0.8)'),
 					text=[stage],
 					textposition='middle center',
-					textfont=dict(color='white', size=10),
+					textfont=dict(color='black', size=10),
 					name=stage
 				))
 
@@ -962,12 +965,12 @@ class InterviewPrepDashboard:
 			# Create Gantt chart
 			fig = px.timeline(
 				timeline_data,
-				x_start="Start",
-				x_end=lambda x: x["Start"] + x["Duration"],
-				y="Stage",
-				text="Description",
-				title="Fairness Implementation Timeline (Months)",
-				color_discrete_sequence=["#4CAF50"]
+				x_start = "Start",
+				x_end   = lambda x: x["Start"] + x["Duration"],
+				y       = "Stage",
+				text    = "Description",
+				title   = "Fairness Implementation Timeline (Months)",
+				color_discrete_sequence = ["#4CAF50"]
 			)
 
 			fig.update_layout(

@@ -24,8 +24,8 @@ command_exists() {
 
 # Function to determine which Python command to use
 get_python_command() {
-	if command_exists python3.12; then
-		echo "python3.12"
+	if command_exists python3.11; then
+		echo "python3.11"
 	elif command_exists python3; then
 		echo "python3"
 	elif command_exists python; then

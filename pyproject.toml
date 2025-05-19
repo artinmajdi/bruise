@@ -37,7 +37,7 @@ dependencies = [
     "streamlit-extras",
     "graphviz",
     "streamlit-chat",
-
+    "scikit-learn",
 ]
 
 [project.optional-dependencies]
