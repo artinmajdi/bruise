@@ -1,0 +1,63 @@
+[build-system]
+requires = ["setuptools>=42", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name        = "bruise"
+version     = "0.1.0"
+description = "A data science and machine learning framework for nursing research"
+readme      = "README.md"
+authors     = [ {name = "Artin Majdi", email = "msm2024@gmail.com"} ]
+classifiers = [
+    "Development Status :: 3 - Alpha",
+    "Intended Audience :: Healthcare Industry",
+    "Intended Audience :: Science/Research",
+    "Operating System :: OS Independent",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    "Topic :: Scientific/Engineering :: Medical Science Apps.",
+    "Topic :: Scientific/Engineering :: Artificial Intelligence",
+]
+keywords = ["nursing research", "healthcare", "AI", "medical analysis"]
+requires-python = ">=3.10,<3.13"
+dependencies = [
+    "streamlit",
+    "tensorflow",
+    "keras",
+    "pandas",
+    "numpy",
+    "matplotlib",
+    "pillow",
+    "opencv-python",
+    "pydicom",
+    "watchdog",
+    "plotly",
+    "streamlit-extras",
+    "graphviz",
+    "streamlit-chat",
+
+]
+
+[project.optional-dependencies]
+test = [
+    "pytest>=6.0",
+    "pytest-cov>=2.0",
+]
+
+[project.urls]
+Homepage      = "https://github.com/artinmajdi/bruise"
+Documentation = "https://github.com/artinmajdi/bruise/docs"
+Repository    = "https://github.com/artinmajdi/bruise.git"
+Issues        = "https://github.com/artinmajdi/bruise/issues"
+
+[project.scripts]
+bruise = "scripts.run_dashboard:main"
+
+[tool.setuptools]
+include-package-data = true
+
+[tool.setuptools.packages.find]
+where = ["."]
+include = ["scripts*", "src*"]
