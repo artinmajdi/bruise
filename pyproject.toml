@@ -38,6 +38,7 @@ dependencies = [
     "graphviz",
     "streamlit-chat",
     "scikit-learn",
+    "dotenv",
 ]
 
 [project.optional-dependencies]

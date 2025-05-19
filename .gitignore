@@ -94,6 +94,11 @@ env.bak/
 venv.bak/
 .pypirc
 
+# mypy
+.mypy_cache/
+.dmypy.json
+dmypy.json
+
 # Spyder project settings
 .spyderproject
 .spyproject
@@ -133,3 +138,4 @@ logs/
 data/
 output/
 results/
+uv.lock
