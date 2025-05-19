@@ -1,4 +1,4 @@
-from .pages import (
+from .visualization_tabs import (
     HomePage,
     ComputerVisionPage,
     FairnessPage,
