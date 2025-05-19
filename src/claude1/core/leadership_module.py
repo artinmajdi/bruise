@@ -4,6 +4,7 @@
 import pandas as pd
 from datetime import datetime, timedelta
 import random
+import streamlit as st
 
 class TeamManagement:
     """
@@ -14,7 +15,7 @@ class TeamManagement:
         self.team_challenges = self._initialize_challenges()
         self.meeting_schedule = self._initialize_meeting_schedule()
         self.project_milestones = self._initialize_project_milestones()
-    
+
     def _initialize_team_structure(self):
         """
         Initialize team structure with roles and responsibilities
@@ -162,7 +163,7 @@ class TeamManagement:
             ]
         }
         return team_structure
-    
+
     def _initialize_challenges(self):
         """
         Initialize common team challenges and mitigation strategies
@@ -266,16 +267,16 @@ class TeamManagement:
             }
         ]
         return challenges
-    
+
     def _initialize_meeting_schedule(self):
         """
         Initialize team meeting schedule
         """
         today = datetime.now()
         start_date = today - timedelta(days=today.weekday())  # Previous Monday
-        
+
         meeting_schedule = []
-        
+
         # Weekly team meeting
         for week in range(4):
             meeting_schedule.append({
@@ -291,7 +292,7 @@ class TeamManagement:
                 ],
                 "frequency": "Weekly"
             })
-        
+
         # Technical team meetings
         for week in range(4):
             meeting_schedule.append({
@@ -307,7 +308,7 @@ class TeamManagement:
                 ],
                 "frequency": "Weekly"
             })
-        
+
         # Clinical team meetings
         for week in range(4):
             meeting_schedule.append({
@@ -323,7 +324,7 @@ class TeamManagement:
                 ],
                 "frequency": "Weekly"
             })
-        
+
         # Leadership meetings
         for week in range(4):
             if week % 2 == 0:  # Bi-weekly
@@ -340,7 +341,7 @@ class TeamManagement:
                     ],
                     "frequency": "Bi-weekly"
                 })
-        
+
         # Student mentorship meetings
         for week in range(4):
             meeting_schedule.append({
@@ -356,7 +357,7 @@ class TeamManagement:
                 ],
                 "frequency": "Weekly"
             })
-        
+
         # Monthly all-hands meeting
         meeting_schedule.append({
             "name": "Monthly All-Hands Meeting",
@@ -371,16 +372,16 @@ class TeamManagement:
             ],
             "frequency": "Monthly"
         })
-        
+
         return meeting_schedule
-    
+
     def _initialize_project_milestones(self):
         """
         Initialize project milestones
         """
         today = datetime.now()
         start_date = today - timedelta(days=60)  # Project started 2 months ago
-        
+
         milestones = [
             {
                 "name": "Project Kickoff",
@@ -503,9 +504,9 @@ class TeamManagement:
                 "dependencies": ["System Integration", "First Conference Publication"]
             }
         ]
-        
+
         return milestones
-    
+
     def get_team_roles(self):
         """
         Get all team roles as a flat list
@@ -515,7 +516,7 @@ class TeamManagement:
             for member in self.team_structure[category]:
                 roles.append(member)
         return roles
-    
+
     def get_team_composition_summary(self):
         """
         Get summary of team composition by discipline
@@ -527,41 +528,41 @@ class TeamManagement:
                 if discipline not in disciplines:
                     disciplines[discipline] = 0
                 disciplines[discipline] += 1
-        
+
         return disciplines
-    
+
     def get_meetings_by_type(self, meeting_type=None):
         """
         Get meetings filtered by type
         """
         if meeting_type is None:
             return self.meeting_schedule
-        
+
         filtered_meetings = []
         for meeting in self.meeting_schedule:
             if meeting_type.lower() in meeting["name"].lower():
                 filtered_meetings.append(meeting)
-        
+
         return filtered_meetings
-    
+
     def get_upcoming_milestones(self, days=90):
         """
         Get milestones coming up within specified days
         """
         today = datetime.now()
         upcoming = []
-        
+
         for milestone in self.project_milestones:
             milestone_date = datetime.strptime(milestone["date"], "%Y-%m-%d")
             days_until = (milestone_date - today).days
-            
+
             if 0 <= days_until <= days and milestone["status"] != "Completed":
                 milestone_with_days = milestone.copy()
                 milestone_with_days["days_until"] = days_until
                 upcoming.append(milestone_with_days)
-        
+
         return upcoming
-    
+
     def get_milestone_dependencies(self):
         """
         Get milestone dependencies for visualization
@@ -573,9 +574,9 @@ class TeamManagement:
                     "from": dependency,
                     "to": milestone["name"]
                 })
-        
+
         return dependencies
-    
+
     def get_milestone_timeline_data(self):
         """
         Get milestone data formatted for timeline visualization
@@ -583,10 +584,10 @@ class TeamManagement:
         timeline_data = []
         for milestone in self.project_milestones:
             milestone_date = datetime.strptime(milestone["date"], "%Y-%m-%d")
-            
+
             # Estimate duration based on dependencies and next milestones
             duration_days = 30  # Default duration
-            
+
             timeline_data.append({
                 "Task": milestone["name"],
                 "Start": milestone_date.strftime("%Y-%m-%d"),
@@ -594,9 +595,9 @@ class TeamManagement:
                 "Status": milestone["status"],
                 "Description": milestone["description"]
             })
-        
+
         return timeline_data
-    
+
     def generate_team_charter(self):
         """
         Generate a team charter document
@@ -654,16 +655,16 @@ class TeamManagement:
                 "Team collaboration effectiveness"
             ]
         }
-        
+
         return charter
-    
+
     def generate_mentorship_plan(self, student_type):
         """
         Generate a mentorship plan for a specific type of student
-        
+
         Parameters:
         - student_type: Type of student (CS, Nursing, Engineering)
-        
+
         Returns:
         - plan: Dictionary with mentorship plan details
         """
@@ -689,7 +690,7 @@ class TeamManagement:
                 "CV/resume development"
             ]
         }
-        
+
         if student_type.lower() == "cs":
             plan = {
                 "title": "Computer Science Graduate Student Mentorship Plan",
@@ -826,19 +827,19 @@ class TeamManagement:
                     "Culminate in research leadership"
                 ]
             }
-        
+
         # Add common elements
         for key, value in common_elements.items():
             plan[key] = value
-        
+
         return plan
-    
+
     def generate_communication_matrix(self):
         """
         Generate a communication matrix for team interactions
         """
         team_groups = list(self.team_structure.keys())
-        
+
         # Define meeting frequency between different team groups
         meeting_frequency = {
             ("leadership", "leadership"): "Weekly",
@@ -852,7 +853,7 @@ class TeamManagement:
             ("clinical_team", "students"): "Weekly",
             ("students", "students"): "Daily"
         }
-        
+
         # Define communication channels between different team groups
         communication_channels = {
             ("leadership", "leadership"): ["Meetings", "Email", "Project management tool", "Messaging"],
@@ -866,7 +867,7 @@ class TeamManagement:
             ("clinical_team", "students"): ["Shadowing", "Meetings", "Email"],
             ("students", "students"): ["Peer sessions", "Messaging", "Collaborative workspace"]
         }
-        
+
         # Define information types shared between different team groups
         information_types = {
             ("leadership", "leadership"): ["Strategic decisions", "Resource allocation", "Risk management", "External communications"],
@@ -880,22 +881,22 @@ class TeamManagement:
             ("clinical_team", "students"): ["Clinical context", "User requirements", "Testing protocols", "Domain knowledge"],
             ("students", "students"): ["Technical assistance", "Research collaboration", "Learning resources", "Peer feedback"]
         }
-        
+
         # Construct communication matrix
         matrix = []
-        
+
         # Add all group-to-group combinations
         for i, group1 in enumerate(team_groups):
             for j, group2 in enumerate(team_groups):
                 if i <= j:  # Include diagonal and upper triangle
                     key = (group1, group2)
                     reverse_key = (group2, group1)
-                    
+
                     # Check if direct or reverse key exists
                     freq = meeting_frequency.get(key, meeting_frequency.get(reverse_key, "As needed"))
                     channels = communication_channels.get(key, communication_channels.get(reverse_key, ["Email", "Messaging"]))
                     info = information_types.get(key, information_types.get(reverse_key, ["Project information"]))
-                    
+
                     matrix.append({
                         "from_group": group1,
                         "to_group": group2,
@@ -903,9 +904,9 @@ class TeamManagement:
                         "channels": channels,
                         "information_types": info
                     })
-        
+
         return matrix
-    
+
     def get_onboarding_process(self):
         """
         Get onboarding process for new team members
@@ -1054,16 +1055,16 @@ class TeamManagement:
                 }
             ]
         }
-        
+
         return onboarding
-    
+
     def get_publication_plan(self):
         """
         Get publication plan for the project
         """
         today = datetime.now()
         start_date = today - timedelta(days=60)  # Project started 2 months ago
-        
+
         publication_plan = {
             "strategy": {
                 "focus_areas": [
@@ -1193,9 +1194,9 @@ class TeamManagement:
                 }
             ]
         }
-        
+
         return publication_plan
-    
+
     def get_conflict_resolution_plan(self):
         """
         Get comprehensive conflict resolution plan for team issues
@@ -1347,9 +1348,9 @@ class TeamManagement:
                 "Preserve team cohesion and morale"
             ]
         }
-        
+
         return resolution_plan
-    
+
     def get_risk_management_plan(self):
         """
         Get comprehensive risk management plan for the project
@@ -1553,15 +1554,15 @@ class TeamManagement:
                 "Post-incident reviews for lessons learned"
             ]
         }
-        
+
         return risk_plan
-    
+
     def calculate_team_metrics(self):
         """
         Calculate various team performance and collaboration metrics
         """
         today = datetime.now()
-        
+
         metrics = {
             "team_size": {
                 "total": sum(len(members) for members in self.team_structure.values()),
@@ -1590,7 +1591,7 @@ class TeamManagement:
             "workload_distribution": {},
             "publication_metrics": {}
         }
-        
+
         # Calculate meeting metrics
         meeting_types = {}
         for meeting in self.meeting_schedule:
@@ -1598,35 +1599,35 @@ class TeamManagement:
             if meeting_type not in meeting_types:
                 meeting_types[meeting_type] = 0
             meeting_types[meeting_type] += 1
-            
+
             # Extract duration (assuming format "HH:MM - HH:MM")
             time_parts = meeting["time"].split(" - ")
             if len(time_parts) == 2:
                 start_time = datetime.strptime(time_parts[0], "%H:%M")
                 end_time = datetime.strptime(time_parts[1], "%H:%M")
                 duration_hours = (end_time - start_time).seconds / 3600
-                
+
                 if meeting["frequency"] == "Weekly":
                     metrics["meeting_metrics"]["total_hours_per_week"] += duration_hours
                 elif meeting["frequency"] == "Bi-weekly":
                     metrics["meeting_metrics"]["total_hours_per_week"] += duration_hours / 2
                 elif meeting["frequency"] == "Monthly":
                     metrics["meeting_metrics"]["total_hours_per_week"] += duration_hours / 4
-        
+
         metrics["meeting_metrics"]["by_type"] = meeting_types
-        
+
         # Calculate milestone metrics
         completed = metrics["milestone_metrics"]["completed"]
         total = metrics["milestone_metrics"]["total"]
         metrics["milestone_metrics"]["completion_rate"] = round(completed / total * 100, 1) if total > 0 else 0
-        
+
         # Count overdue milestones
         for milestone in self.project_milestones:
             if milestone["status"] != "Completed":
                 milestone_date = datetime.strptime(milestone["date"], "%Y-%m-%d")
                 if milestone_date < today:
                     metrics["milestone_metrics"]["overdue"] += 1
-        
+
         # Calculate collaboration intensity
         comm_matrix = self.generate_communication_matrix()
         for entry in comm_matrix:
@@ -1634,13 +1635,13 @@ class TeamManagement:
                 metrics["collaboration_intensity"]["cross_team_meetings"] += 1
                 if entry["frequency"] in ["Daily", "Weekly"]:
                     metrics["collaboration_intensity"]["interdisciplinary_interactions"] += 1
-        
+
         # Calculate workload distribution (simplified)
         team_categories = list(self.team_structure.keys())
         for category in team_categories:
             # Estimate based on meeting participation and milestones
             workload_score = 0
-            
+
             # Meeting participation
             for meeting in self.meeting_schedule:
                 if category.lower() in meeting["participants"].lower() or "all" in meeting["participants"].lower():
@@ -1650,14 +1651,14 @@ class TeamManagement:
                         workload_score += 2
                     elif meeting["frequency"] == "Monthly":
                         workload_score += 1
-            
+
             # Milestone involvement (simplified)
             for milestone in self.project_milestones:
                 if category.lower() in milestone["description"].lower():
                     workload_score += 5
-            
+
             metrics["workload_distribution"][category] = workload_score
-        
+
         # Publication metrics
         pub_plan = self.get_publication_plan()
         if "planned_publications" in pub_plan:
@@ -1667,35 +1668,35 @@ class TeamManagement:
                 "by_venue_type": {"journal": 0, "conference": 0},
                 "lead_author_distribution": {}
             }
-            
+
             for pub in pub_plan["planned_publications"]:
                 status = pub.get("status", "Unknown")
                 if status not in metrics["publication_metrics"]["by_status"]:
                     metrics["publication_metrics"]["by_status"][status] = 0
                 metrics["publication_metrics"]["by_status"][status] += 1
-                
+
                 if "Journal" in pub.get("target_venue", ""):
                     metrics["publication_metrics"]["by_venue_type"]["journal"] += 1
                 else:
                     metrics["publication_metrics"]["by_venue_type"]["conference"] += 1
-                
+
                 lead = pub.get("lead_author", "Unknown")
                 if lead not in metrics["publication_metrics"]["lead_author_distribution"]:
                     metrics["publication_metrics"]["lead_author_distribution"][lead] = 0
                 metrics["publication_metrics"]["lead_author_distribution"][lead] += 1
-        
+
         return metrics
-    
+
     def generate_progress_report(self):
         """
         Generate a comprehensive progress report for stakeholders
         """
         today = datetime.now()
         start_date = today - timedelta(days=60)  # Assuming project started 2 months ago
-        
+
         # Calculate metrics
         metrics = self.calculate_team_metrics()
-        
+
         report = {
             "report_metadata": {
                 "title": "EAS-ID Project Progress Report",
@@ -1717,7 +1718,7 @@ class TeamManagement:
                     "Balancing clinical requirements with technical innovation"
                 ],
                 "upcoming_milestones": [
-                    f"{m['name']} ({m['days_until']} days)" 
+                    f"{m['name']} ({m['days_until']} days)"
                     for m in self.get_upcoming_milestones(90)[:3]
                 ]
             },
@@ -1795,7 +1796,7 @@ class TeamManagement:
                 "papers_accepted": 0,
                 "presentations_given": 2,
                 "upcoming_submissions": [
-                    pub["title"][:50] + "..." 
+                    pub["title"][:50] + "..."
                     for pub in self.get_publication_plan()["planned_publications"][:2]
                 ]
             },
@@ -1840,9 +1841,9 @@ class TeamManagement:
                 "technical_specifications": "Available in project repository"
             }
         }
-        
+
         return report
-    
+
     def get_team_development_activities(self):
         """
         Get team development and training activities
@@ -1978,7 +1979,7 @@ class TeamManagement:
                     "budget": "$20,000 annually",
                     "supported_conferences": [
                         "Computer Vision conferences",
-                        "Healthcare informatics conferences", 
+                        "Healthcare informatics conferences",
                         "Forensic nursing conferences"
                     ],
                     "requirements": "Present research or bring back learnings"
@@ -2001,5 +2002,85 @@ class TeamManagement:
                 }
             }
         }
-        
+
         return activities
+
+
+def display_team_structure():
+    """
+    Displays an illustrative team structure for an AI project.
+    This function is designed to be called within a Streamlit app,
+    and it will render Markdown text.
+    """
+    st.markdown("""
+    **Illustrative Core Team Roles & Responsibilities:**
+    - **Project Lead / Product Manager:**
+        - Defines project vision, goals, and roadmap.
+        - Manages timelines, resources, and stakeholder communication.
+        - Ensures alignment with user needs and business objectives.
+    - **AI/ML Lead / Senior ML Engineer:**
+        - Designs the overall AI/ML architecture.
+        - Leads model development, experimentation, and optimization.
+        - Mentors junior ML engineers and researchers.
+    - **ML Engineer(s):**
+        - Implements, trains, and evaluates machine learning models.
+        - Works on feature engineering, data preprocessing, and model deployment pipelines.
+    - **Data Scientist(s):**
+        - Performs exploratory data analysis, identifies patterns and insights.
+        - Contributes to feature selection and model validation.
+        - May focus on statistical analysis and fairness evaluation.
+    - **Data Engineer(s):**
+        - Designs, builds, and maintains data pipelines for collection, storage, and processing.
+        - Ensures data quality, integrity, and accessibility.
+    - **Software Engineer(s) (Backend/Frontend/Mobile):**
+        - Develops the user interface, APIs, and supporting infrastructure for the application.
+        - Integrates the ML model into the final product.
+    - **UX/UI Designer:**
+        - Designs user-friendly and accessible interfaces.
+        - Conducts user research and usability testing.
+    - **Clinical Advisor / Domain Expert(s):**
+        - Provides essential medical/clinical expertise and insights.
+        - Assists in data annotation, validation of model outputs, and ensuring clinical relevance.
+        - Advises on ethical considerations and regulatory compliance.
+    - **QA/Test Engineer(s):**
+        - Develops and executes test plans for the model and the application.
+        - Focuses on performance, reliability, and identifying bugs or biases.
+    """)
+
+def display_project_timeline():
+    """
+    Displays a high-level illustrative project timeline.
+    This function is designed to be called within a Streamlit app,
+    and it will render Markdown text.
+    """
+    st.markdown("""
+    **High-Level Illustrative Project Phases & Timeline:**
+
+    1.  **Phase 1: Conception & Feasibility (1-2 Months)**
+        - *Activities:* Problem definition, literature review, initial data sourcing strategy, technical feasibility study, ethical review initiation, team formation, high-level requirements gathering.
+        - *Deliverables:* Project charter, feasibility report, initial risk assessment.
+
+    2.  **Phase 2: Data Acquisition & Preparation (2-4 Months)**
+        - *Activities:* Ethical data collection protocols, data acquisition from identified sources, data cleaning, anonymization, detailed annotation and labeling, setting up data storage and versioning.
+        - *Deliverables:* Annotated dataset (initial version), data quality report, data management plan.
+
+    3.  **Phase 3: Model Development & Prototyping (3-5 Months)**
+        - *Activities:* Exploratory data analysis, feature engineering, selection of candidate model architectures, initial model training and experimentation, hyperparameter tuning, development of a baseline model.
+        - *Deliverables:* Working model prototype, initial performance benchmarks, technical documentation of models.
+
+    4.  **Phase 4: Rigorous Evaluation & Fairness Audit (2-3 Months)**
+        - *Activities:* Comprehensive model validation on diverse test sets, performance analysis across subgroups, fairness and bias assessment, identification of failure modes, iteration on model based on findings.
+        - *Deliverables:* Validation report, fairness audit report, refined model.
+
+    5.  **Phase 5: System Integration & Deployment Planning (2-3 Months)**
+        - *Activities:* Designing the deployment architecture, developing APIs for model integration, building the user interface (if applicable), planning for scalability and monitoring, preparing deployment environment.
+        - *Deliverables:* Deployment plan, integrated system prototype, API documentation.
+
+    6.  **Phase 6: Pilot Deployment & User Feedback (1-2 Months)**
+        - *Activities:* Limited rollout to a pilot user group, collecting user feedback, monitoring model performance in a near-real-world setting, identifying usability issues.
+        - *Deliverables:* Pilot testing report, user feedback summary.
+
+    7.  **Phase 7: Iteration, Full Deployment & Ongoing Monitoring (Continuous)**
+        - *Activities:* Incorporating feedback for model/system improvements, broader deployment, continuous monitoring of model performance, data drift, and fairness. Regular re-training cycles as needed.
+        - *Deliverables:* Production system, monitoring dashboards, updated models and documentation.
+    """)

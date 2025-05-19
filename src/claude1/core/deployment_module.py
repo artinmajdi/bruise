@@ -3,6 +3,7 @@
 
 import numpy as np
 import pandas as pd
+import streamlit as st
 
 class DeploymentComparison:
     """
@@ -11,12 +12,12 @@ class DeploymentComparison:
     def __init__(self):
         self.deployment_options = ["on_device", "edge", "cloud", "hybrid"]
         self.comparison_metrics = [
-            "latency", "privacy", "bandwidth", "compute", 
+            "latency", "privacy", "bandwidth", "compute",
             "battery", "offline_capability", "model_size",
             "update_frequency", "security", "implementation_complexity"
         ]
         self.comparison_data = self._initialize_comparison_data()
-    
+
     def _initialize_comparison_data(self):
         """
         Initialize comparison data for deployment options
@@ -73,47 +74,47 @@ class DeploymentComparison:
             }
         }
         return data
-    
+
     def get_comparison_table(self):
         """
         Get comparison data as a pandas DataFrame
         """
         comparison_df = pd.DataFrame()
-        
+
         for metric in self.comparison_metrics:
             metric_data = {}
             for option in self.deployment_options:
                 metric_data[option] = self.comparison_data[option][metric]
             comparison_df[metric] = pd.Series(metric_data)
-        
+
         return comparison_df.T  # Transpose for better presentation
-    
+
     def get_radar_data(self):
         """
         Get data formatted for radar chart visualization
         """
         radar_data = {}
-        
+
         for option in self.deployment_options:
             radar_data[option] = [self.comparison_data[option][metric] for metric in self.comparison_metrics]
-        
+
         return radar_data, self.comparison_metrics
-    
+
     def analyze_use_case(self, use_case, weights=None):
         """
         Analyze the best deployment option for a specific use case
-        
+
         Parameters:
         - use_case: String describing the use case
         - weights: Dictionary of weights for each comparison metric
-        
+
         Returns:
         - analysis: Dictionary with scores and recommendation
         """
         if weights is None:
             # Default weights based on use case keyword matching
             weights = {}
-            
+
             if "forensic" in use_case.lower() or "evidence" in use_case.lower():
                 # Forensic evidence prioritizes privacy and offline capability
                 weights = {
@@ -173,7 +174,7 @@ class DeploymentComparison:
             else:
                 # Default balanced weights
                 weights = {metric: 0.7 for metric in self.comparison_metrics}
-        
+
         # Calculate weighted scores
         scores = {}
         for option in self.deployment_options:
@@ -182,22 +183,22 @@ class DeploymentComparison:
                 weight = weights.get(metric, 0.7)
                 score += self.comparison_data[option][metric] * weight
             scores[option] = score
-        
+
         # Determine best option
         best_option = max(scores, key=scores.get)
-        
+
         # Generate strengths and weaknesses
         strengths = {}
         weaknesses = {}
-        
+
         for option in self.deployment_options:
             # Get top 3 strengths
             option_metrics = [(metric, self.comparison_data[option][metric]) for metric in self.comparison_metrics]
             option_metrics.sort(key=lambda x: x[1], reverse=True)
-            
+
             strengths[option] = [metric for metric, _ in option_metrics[:3]]
             weaknesses[option] = [metric for metric, _ in option_metrics[-3:]]
-        
+
         analysis = {
             "use_case": use_case,
             "weights": weights,
@@ -207,18 +208,18 @@ class DeploymentComparison:
             "weaknesses": weaknesses,
             "score_ratio": {opt: scores[opt] / scores[best_option] for opt in scores}
         }
-        
+
         return analysis
-    
+
     def get_cost_analysis(self, deployment_option, user_count, image_count_per_user):
         """
         Generate cost analysis for different deployment options
-        
+
         Parameters:
         - deployment_option: Deployment strategy to analyze
         - user_count: Number of users/devices
         - image_count_per_user: Average number of images per user per month
-        
+
         Returns:
         - cost_analysis: Dictionary with cost breakdown
         """
@@ -249,30 +250,30 @@ class DeploymentComparison:
                 "per_image_processed": 0.01     # Selective cloud processing
             }
         }
-        
+
         # Get costs for selected option
         if deployment_option not in costs:
             return {"error": f"Invalid deployment option: {deployment_option}"}
-        
+
         option_costs = costs[deployment_option]
-        
+
         # Calculate total monthly costs
         monthly_user_cost = option_costs["per_user_monthly"] * user_count
         monthly_image_cost = option_costs["per_image_processed"] * image_count_per_user * user_count
         monthly_infrastructure = option_costs["infrastructure_monthly"]
-        
+
         total_monthly = monthly_user_cost + monthly_image_cost + monthly_infrastructure
-        
+
         # Calculate first year and subsequent years
         first_year = option_costs["initial_development"] + (total_monthly * 12)
         subsequent_yearly = total_monthly * 12
-        
+
         # Calculate 3-year TCO
         three_year_tco = option_costs["initial_development"] + (total_monthly * 36)
-        
+
         # Calculate per-user cost
         per_user_yearly = subsequent_yearly / user_count
-        
+
         # Return cost analysis
         cost_analysis = {
             "deployment_option": deployment_option,
@@ -288,16 +289,16 @@ class DeploymentComparison:
             "three_year_tco": three_year_tco,
             "per_user_yearly": per_user_yearly
         }
-        
+
         return cost_analysis
-    
+
     def get_deployment_details(self, option):
         """
         Get detailed implementation information for a deployment option
-        
+
         Parameters:
         - option: Deployment option to detail
-        
+
         Returns:
         - details: Dictionary with implementation details
         """
@@ -450,24 +451,24 @@ class DeploymentComparison:
                 }
             }
         }
-        
+
         return details.get(option, {"error": f"Invalid deployment option: {option}"})
-    
+
     def get_bandwidth_analysis(self, deployment_option, image_resolution, images_per_session):
         """
         Calculate bandwidth requirements for different deployment options
-        
+
         Parameters:
         - deployment_option: Deployment strategy to analyze
         - image_resolution: Resolution in megapixels
         - images_per_session: Number of images in typical session
-        
+
         Returns:
         - bandwidth_analysis: Dictionary with bandwidth requirements
         """
         # Base image size (compressed JPEG, in MB)
         base_image_size = image_resolution * 0.15  # Approximate JPEG compression
-        
+
         # Bandwidth multipliers for different deployment options
         multipliers = {
             "on_device": 0.05,  # Minimal transmission (metadata only)
@@ -475,16 +476,16 @@ class DeploymentComparison:
             "cloud": 1.0,      # Full transmission (all images)
             "hybrid": 0.4      # Selective transmission
         }
-        
+
         # Get multiplier for selected option
         if deployment_option not in multipliers:
             return {"error": f"Invalid deployment option: {deployment_option}"}
-        
+
         multiplier = multipliers[deployment_option]
-        
+
         # Calculate total session data size
         session_size_mb = base_image_size * images_per_session * multiplier
-        
+
         # Calculate bandwidth requirements for different connection types
         bandwidth_analysis = {
             "deployment_option": deployment_option,
@@ -519,13 +520,13 @@ class DeploymentComparison:
                 }
             }
         }
-        
+
         return bandwidth_analysis
-    
+
     def get_decision_algorithm(self):
         """
         Get the decision algorithm for hybrid deployment
-        
+
         Returns:
         - algorithm: Dictionary with pseudo-code and decision tree
         """
@@ -543,16 +544,16 @@ class DeploymentComparison:
                 function determineProcessingLocation(image, context):
                     # Check device capabilities
                     device_resources = assessDeviceResources()
-                    
+
                     # Check network conditions
                     network_status = assessNetworkStatus()
-                    
+
                     # Initial bruise detection (lightweight model)
                     initial_detection = runTriageModel(image)
-                    
+
                     # Confidence threshold varies by skin tone
                     confidence_threshold = getConfidenceThreshold(context.skin_tone)
-                    
+
                     if initial_detection.confidence > confidence_threshold:
                         # High confidence, process on device
                         return {
@@ -560,7 +561,7 @@ class DeploymentComparison:
                             "model": "full_segmentation",
                             "reason": "High confidence detection"
                         }
-                    
+
                     # Check if edge server is available
                     if network_status.edge_available:
                         return {
@@ -568,7 +569,7 @@ class DeploymentComparison:
                             "model": "enhanced_segmentation",
                             "reason": "Available edge server with complex case"
                         }
-                    
+
                     # Check if adequate cloud connectivity exists
                     if network_status.internet_quality > 0.7:
                         return {
@@ -576,7 +577,7 @@ class DeploymentComparison:
                             "model": "full_pipeline",
                             "reason": "Complex case with good connectivity"
                         }
-                    
+
                     # Fallback: use on-device with warning about confidence
                     return {
                         "location": "DEVICE",
@@ -625,16 +626,16 @@ class DeploymentComparison:
                 }
             }
         }
-        
+
         return algorithm
-    
+
     def get_optimization_strategies(self, deployment_option):
         """
         Get optimization strategies for each deployment option
-        
+
         Parameters:
         - deployment_option: Deployment strategy to optimize
-        
+
         Returns:
         - strategies: Dictionary of optimization strategies
         """
@@ -805,17 +806,17 @@ class DeploymentComparison:
                 ]
             }
         }
-        
+
         return strategies.get(deployment_option, {"error": f"Invalid deployment option: {deployment_option}"})
-    
+
     def estimate_deployment_performance(self, deployment_option, system_specs):
         """
         Estimate performance metrics for a deployment option
-        
+
         Parameters:
         - deployment_option: Deployment strategy
         - system_specs: Dictionary with system specifications
-        
+
         Returns:
         - performance_estimates: Dictionary with performance estimates
         """
@@ -858,64 +859,64 @@ class DeploymentComparison:
                 "accuracy_fitzpatrick_5_6": 0.88
             }
         }
-        
+
         if deployment_option not in base_metrics:
             return {"error": f"Invalid deployment option: {deployment_option}"}
-        
+
         metrics = base_metrics[deployment_option].copy()
-        
+
         # Adjust based on system specifications
         if deployment_option == "on_device":
             # Adjust for device capabilities
             cpu_cores = system_specs.get("cpu_cores", 4)
             ram_gb = system_specs.get("ram_gb", 4)
             has_gpu = system_specs.get("has_gpu", False)
-            
+
             # Scale performance based on hardware
             metrics["inference_time_ms"] = int(metrics["inference_time_ms"] / (cpu_cores / 4))
             metrics["throughput_images_per_sec"] = metrics["throughput_images_per_sec"] * (cpu_cores / 4)
-            
+
             if has_gpu:
                 metrics["inference_time_ms"] = int(metrics["inference_time_ms"] * 0.3)
                 metrics["throughput_images_per_sec"] = metrics["throughput_images_per_sec"] * 3
                 metrics["power_consumption_mw"] = metrics["power_consumption_mw"] * 1.5
-            
+
             if ram_gb < 4:
                 metrics["memory_usage_mb"] = metrics["memory_usage_mb"] * 1.5
-        
+
         elif deployment_option == "edge":
             # Adjust for edge server capabilities
             server_gpus = system_specs.get("server_gpus", 1)
             server_ram_gb = system_specs.get("server_ram_gb", 16)
-            
+
             metrics["throughput_images_per_sec"] = metrics["throughput_images_per_sec"] * server_gpus
             metrics["power_consumption_mw"] = metrics["power_consumption_mw"] * server_gpus
-        
+
         elif deployment_option == "cloud":
             # Adjust for cloud infrastructure
             cloud_tier = system_specs.get("cloud_tier", "standard")
-            
+
             if cloud_tier == "premium":
                 metrics["inference_time_ms"] = int(metrics["inference_time_ms"] * 0.5)
                 metrics["throughput_images_per_sec"] = metrics["throughput_images_per_sec"] * 2
             elif cloud_tier == "basic":
                 metrics["inference_time_ms"] = int(metrics["inference_time_ms"] * 2)
                 metrics["throughput_images_per_sec"] = int(metrics["throughput_images_per_sec"] * 0.5)
-        
+
         # Add network latency for non-device deployments
         if deployment_option != "on_device":
             network_latency_ms = system_specs.get("network_latency_ms", 50)
             metrics["total_response_time_ms"] = metrics["inference_time_ms"] + network_latency_ms
         else:
             metrics["total_response_time_ms"] = metrics["inference_time_ms"]
-        
+
         # Calculate derived metrics
         metrics["images_per_minute"] = metrics["throughput_images_per_sec"] * 60
         metrics["daily_capacity"] = metrics["images_per_minute"] * 60 * 24
         metrics["cost_per_1000_images"] = self._calculate_cost_per_1000_images(deployment_option, metrics)
-        
+
         return metrics
-    
+
     def _calculate_cost_per_1000_images(self, deployment_option, metrics):
         """
         Calculate cost per 1000 images based on deployment option and metrics
@@ -926,25 +927,25 @@ class DeploymentComparison:
             "cloud": 0.50,      # Cloud compute costs
             "hybrid": 0.15      # Mixed costs
         }
-        
+
         base_cost = costs.get(deployment_option, 0.10)
-        
+
         # Adjust based on performance metrics
         if "power_consumption_mw" in metrics:
             # Add electricity cost
             kwh_per_1000_images = (metrics["power_consumption_mw"] / 1000) * (1000 / metrics["throughput_images_per_sec"]) / 3600
             electricity_cost = kwh_per_1000_images * 0.12  # $0.12 per kWh average
             base_cost += electricity_cost
-        
+
         return round(base_cost, 2)
-    
+
     def get_deployment_checklist(self, deployment_option):
         """
         Get deployment checklist for a specific option
-        
+
         Parameters:
         - deployment_option: Deployment strategy
-        
+
         Returns:
         - checklist: Dictionary with deployment checklist
         """
@@ -1118,5 +1119,45 @@ class DeploymentComparison:
                 ]
             }
         }
-        
+
         return checklists.get(deployment_option, {"error": f"Invalid deployment option: {deployment_option}"})
+
+
+def display_deployment_options():
+    """
+    Displays potential deployment options for an AI model.
+    This function is designed to be called within a Streamlit app,
+    and it will render Markdown text.
+    """
+    st.markdown("""
+    **Potential Deployment Platforms & Strategies:**
+    - **Cloud-Based API Service:**
+        - *Pros:* Highly scalable, accessible from various clients (web, mobile), managed infrastructure (e.g., AWS SageMaker, Google AI Platform, Azure ML).
+        - *Cons:* Requires internet connectivity, potential latency, data privacy concerns for sensitive data transfer.
+    - **Mobile Application (On-Device Inference):**
+        - *Pros:* Low latency, offline capabilities, enhanced data privacy (data stays on device) (e.g., using TensorFlow Lite, Core ML, ONNX Runtime).
+        - *Cons:* Model size constraints, computational limitations of mobile devices, platform-specific development.
+    - **Edge Devices / Embedded Systems:**
+        - *Pros:* Real-time processing at the source, suitable for specialized medical imaging devices or portable scanners.
+        - *Cons:* Significant hardware and software optimization required, potentially higher upfront costs for specialized hardware.
+    - **Web Application with Server-Side Processing:**
+        - *Pros:* Centralized model updates, accessible via browser.
+        - *Cons:* Requires image upload, server load management.
+    """)
+
+def display_scalability_info():
+    """
+    Displays considerations for scalability and monitoring of AI models.
+    This function is designed to be called within a Streamlit app,
+    and it will render Markdown text.
+    """
+    st.markdown("""
+    **Scalability & Monitoring Considerations:**
+    - **Load Balancing:** Essential for cloud-based deployments to distribute incoming requests across multiple instances of the model service, preventing overload.
+    - **Auto-Scaling:** Automatically adjusting the number of compute resources (e.g., servers, containers) based on real-time demand to ensure performance and cost-efficiency.
+    - **Model Versioning & Management:** Implementing systems to manage different versions of the model, allowing for rollbacks and A/B testing.
+    - **Performance Monitoring:** Continuously tracking key performance indicators (KPIs) such as latency, throughput, error rates, and resource utilization.
+    - **Data Drift & Concept Drift Detection:** Monitoring the input data distribution and model performance over time to detect changes that might degrade model accuracy. Re-training or fine-tuning may be necessary.
+    - **Logging & Alerting:** Comprehensive logging of requests, predictions, and errors. Setting up alerts for critical issues, performance degradation, or fairness violations.
+    - **Security & Compliance:** Ensuring data security in transit and at rest, access control, and adherence to relevant regulations (e.g., HIPAA if dealing with medical data).
+    """)

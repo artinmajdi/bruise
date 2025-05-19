@@ -5,6 +5,8 @@ import numpy as np
 import cv2
 from PIL import Image, ImageEnhance
 import tensorflow as tf
+import streamlit as st
+
 
 class BruiseDetectionModel:
     """
@@ -334,3 +336,39 @@ def apply_als_filter(image, wavelength=415, filter_color="orange"):
     als_image = np.clip(als_image, 0, 255).astype(np.uint8)
 
     return als_image
+
+
+def display_problem_statement():
+    """
+    Displays the problem statement for the bruise detection project.
+    This function is designed to be called within a Streamlit app,
+    and it will render Markdown text.
+    """
+    st.markdown("""
+    **Problem:** Late detection of bruises, particularly in vulnerable populations (e.g., elderly, children), can lead to delayed medical intervention and poorer health outcomes. Current methods often rely on visual inspection, which can be subjective and inconsistent, especially for subtle bruises or varying skin tones.
+    """)
+
+def display_solution_overview():
+    """
+    Displays the solution overview for the bruise detection project.
+    This function is designed to be called within a Streamlit app,
+    and it will render Markdown text.
+    """
+    st.markdown("""
+    **Solution:** An AI-powered tool designed to analyze images of skin to detect early signs of bruising with greater accuracy and objectivity. This tool aims to assist healthcare professionals, caregivers, and potentially individuals in identifying bruises promptly, especially in subtle cases, under challenging lighting conditions, or across diverse skin tones.
+    """)
+
+def display_technical_details(): # Not used by current app.py but kept from original
+    """
+    Displays technical details about the model and approach.
+    This function is designed to be called within a Streamlit app,
+    and it will render Markdown text.
+    """
+    st.markdown("""
+    **Illustrative Technical Approach:**
+    - **Model Architecture:** Likely a Convolutional Neural Network (CNN) based model (e.g., ResNet, EfficientNet, or a custom architecture) fine-tuned or trained for bruise detection.
+    - **Key Features Learned:** The model would learn to identify patterns, subtle color variations (e.g., purples, blues, greens, yellows indicative of different bruise ages), and textural changes associated with bruising.
+    - **Training Data:** A diverse and well-annotated dataset of skin images, including various skin tones, lighting conditions, and bruise severities/ages.
+    - **Data Augmentation:** Techniques such as rotation, flipping, brightness/contrast adjustments, and color jittering would be used to enhance dataset robustness and prevent overfitting.
+    - **Evaluation Metrics:** Accuracy, Precision, Recall, F1-score, and AUC-ROC, potentially segmented by skin tone or other relevant demographics to assess fairness.
+    """)
