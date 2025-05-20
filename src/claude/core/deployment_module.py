@@ -1123,6 +1123,7 @@ class DeploymentComparison:
         return checklists.get(deployment_option, {"error": f"Invalid deployment option: {deployment_option}"})
 
 
+
 def display_deployment_options():
     """
     Displays potential deployment options for an AI model.

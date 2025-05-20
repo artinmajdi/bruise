@@ -13,48 +13,55 @@ import os
 import sys
 import subprocess
 import argparse
-from typing import List, Tuple, Dict
+import socket
+from typing import List, Tuple, Dict, Optional
 
 def find_dashboard_apps(src_dir: str) -> Dict[str, List[Tuple[str, str]]]:
     """
-    Find all app.py files in all modules inside the src directory.
+    Find all files starting with 'app' in all modules inside the src directory.
     Returns a dictionary with module names as keys and lists of tuples (dashboard_name, app_path) as values.
     """
     dashboard_apps = {}
     skip_items = {'.DS_Store', '__pycache__'}
 
-    # First level: check all directories in src
+    def find_app_files(directory: str, base_path: str = '') -> List[Tuple[str, str]]:
+        """Recursively find all files starting with 'app' in the given directory."""
+        app_files = []
+        try:
+            for item in os.listdir(directory):
+                item_path = os.path.join(directory, item)
+                
+                # Skip hidden files/directories and special directories
+                if item.startswith('.') or item in skip_items:
+                    continue
+                    
+                # If it's a directory, search it recursively
+                if os.path.isdir(item_path):
+                    new_base = f"{base_path}/{item}" if base_path else item
+                    app_files.extend(find_app_files(item_path, new_base))
+                # If it's a file and starts with 'app', add it to the results
+                elif os.path.isfile(item_path) and item.startswith('app'):
+                    display_name = f"{base_path}/{item}" if base_path else item
+                    app_files.append((display_name, item_path))
+        except Exception as e:
+            print(f"Error searching in {directory}: {e}")
+        return app_files
+
     try:
+        # Search through all modules in src directory
         for module_name in os.listdir(src_dir):
             module_path = os.path.join(src_dir, module_name)
 
             # Skip files and hidden directories
-            if not os.path.isdir(module_path) or module_name.startswith('__') or module_name.startswith('.') or module_name in skip_items:
+            if not os.path.isdir(module_path) or module_name.startswith('__') or module_name in skip_items:
                 continue
 
-            module_apps = []
-
-            # Check for app.py in the module root
-            app_path = os.path.join(module_path, 'app.py')
-            if os.path.isfile(app_path):
-                dashboard_name = f"{module_name}/app"
-                module_apps.append((dashboard_name, app_path))
-
-            # Check subdirectories for app.py files
-            for subdir in os.listdir(module_path):
-                subdir_path = os.path.join(module_path, subdir)
-
-                if not os.path.isdir(subdir_path) or subdir.startswith('__') or subdir.startswith('.') or subdir in skip_items:
-                    continue
-
-                # Check for app.py in subdirectory
-                subdir_app_path = os.path.join(subdir_path, 'app.py')
-                if os.path.isfile(subdir_app_path):
-                    dashboard_name = f"{module_name}/{subdir}/app"
-                    module_apps.append((dashboard_name, subdir_app_path))
-
+            # Find all app files in this module
+            module_apps = find_app_files(module_path, module_name)
+            
             if module_apps:
                 dashboard_apps[module_name] = module_apps
+                
     except Exception as e:
         print(f"Error searching for dashboards: {e}")
 
@@ -79,10 +86,35 @@ def select_dashboard(all_apps: List[Tuple[str, str]]) -> Tuple[str, str]:
         except ValueError:
             print("Please enter a valid number.")
 
+def is_port_available(port: int) -> bool:
+    """Check if a port is available."""
+    with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as s:
+        try:
+            s.bind(('localhost', port))
+            return True
+        except OSError:
+            return False
+
+def find_available_port(start_port: int = 8501, max_attempts: int = 100) -> Optional[int]:
+    """Find an available port starting from start_port.
+    
+    Args:
+        start_port: The port to start checking from
+        max_attempts: Maximum number of ports to check
+        
+    Returns:
+        Available port number or None if no port is available
+    """
+    for port in range(start_port, start_port + max_attempts):
+        if is_port_available(port):
+            return port
+    return None
+
 def main():
     # Parse command-line arguments
     parser = argparse.ArgumentParser(description='Run a Streamlit dashboard from the src directory')
     parser.add_argument('dashboard_number', nargs='?', type=int, help='Dashboard number to run (optional)')
+    parser.add_argument('--port', type=int, default=8501, help='Base port number to use (default: 8501)')
     args = parser.parse_args()
 
     # Get the project root directory (one level up from scripts directory)
@@ -168,6 +200,17 @@ def main():
         cmd = streamlit_cmd + ["run", app_path]
         print(f"Running command: {' '.join(cmd)}")
 
+        # Find an available port
+        port = find_available_port(args.port)
+        if port is None:
+            print(f"Error: Could not find an available port starting from {args.port}")
+            return 1
+            
+        print(f"Using port: {port}")
+        
+        # Add port to the command
+        cmd.extend(["--server.port", str(port)])
+        
         # Run the streamlit app
         result = subprocess.run(
             cmd,
@@ -201,9 +244,9 @@ def main():
                     streamlit_executable = os.path.join(venv_path, 'Scripts', 'streamlit.exe')
                 else:  # Unix/Mac
                     streamlit_executable = os.path.join(venv_path, 'bin', 'streamlit')
-                cmd = [streamlit_executable, "run", app_path]
+                cmd = [streamlit_executable, "run", "--server.port", str(port), app_path]
             else:
-                cmd = ["streamlit", "run", app_path]
+                cmd = ["streamlit", "run", "--server.port", str(port), app_path]
 
             return subprocess.run(cmd, env=env, check=True).returncode
         except subprocess.CalledProcessError as e:

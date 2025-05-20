@@ -327,10 +327,16 @@ def apply_als_filter(image, wavelength=415, filter_color="orange"):
 
     # Apply fluorescence effect based on wavelength
     if wavelength == 415:  # Violet light
-        als_image[:,:,0] += bruise_mask[:,:,np.newaxis] * 40  # Add red fluorescence
-        als_image[:,:,1] += bruise_mask[:,:,np.newaxis] * 30  # Add green fluorescence
+        # Add red and green fluorescence channels
+        fluorescence = np.zeros_like(als_image, dtype=np.float32)
+        fluorescence[..., 0] = bruise_mask * 40  # Red channel
+        fluorescence[..., 1] = bruise_mask * 30  # Green channel
+        als_image = cv2.add(als_image.astype(np.float32), fluorescence).astype(np.uint8)
     elif wavelength == 450:  # Blue light
-        als_image[:,:,1] += bruise_mask[:,:,np.newaxis] * 60  # Add green fluorescence
+        # Add green fluorescence channel
+        fluorescence = np.zeros_like(als_image, dtype=np.float32)
+        fluorescence[..., 1] = bruise_mask * 60  # Green channel
+        als_image = cv2.add(als_image.astype(np.float32), fluorescence).astype(np.uint8)
 
     # Clip values and convert back to uint8
     als_image = np.clip(als_image, 0, 255).astype(np.uint8)

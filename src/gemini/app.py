@@ -67,62 +67,61 @@ class Dashboard:
 		)
 
 		st.markdown("""
-		<style>
-			/* Main app background */
-			.main {
-				background-color: #f0f2f6; /* Light grey background */
-			}
+			<style>
+				/* Main app background */
+				.main {
+					background-color: #f0f2f6; /* Light grey background */
+				}
 
-			/* Sidebar styling */
-			[data-testid="stSidebar"] {
-				background-color: #2c3e50; /* Dark blue-grey */
-				color: white;
-			}
-			[data-testid="stSidebar"] .st-emotion-cache-16txtl3 { /* Sidebar navigation items */
-				color: white;
-			}
-			[data-testid="stSidebar"] .st-emotion-cache-16txtl3:hover {
-				background-color: #34495e; /* Slightly lighter blue-grey on hover */
-			}
-			[data-testid="stSidebar"] .st-emotion-cache-16txtl3.st-emotion-cache-16txtl3 { /* Active item */
-				background-color: #1abc9c; /* Teal for active item */
-				color: white;
-				font-weight: bold;
-			}
+				/* Sidebar styling */
+				[data-testid="stSidebar"] {
+					background-color: white; /* Dark blue-grey */
+					color: black;
+				}
+				[data-testid="stSidebar"] .st-emotion-cache-16txtl3 { /* Sidebar navigation items */
+					color: black;
+				}
+				[data-testid="stSidebar"] .st-emotion-cache-16txtl3:hover {
+					background-color: #34495e; /* Slightly lighter blue-grey on hover */
+				}
+				[data-testid="stSidebar"] .st-emotion-cache-16txtl3.st-emotion-cache-16txtl3 { /* Active item */
+					background-color: #1abc9c; /* Teal for active item */
+					color: black;
+					font-weight: bold;
+				}
 
-			/* Titles and headers */
-			h1, h2, h3 {
-				color: #2c3e50; /* Dark blue-grey for titles */
-			}
+				/* Titles and headers */
+				h1, h2, h3 {
+					color: #2c3e50; /* Dark blue-grey for titles */
+				}
 
-			/* Custom button style */
-			.stButton>button {
-				background-color: #1abc9c; /* Teal */
-				color: white;
-				border-radius: 5px;
-				border: none;
-				padding: 10px 20px;
-				font-weight: bold;
-			}
-			.stButton>button:hover {
-				background-color: #16a085; /* Darker teal on hover */
-				color: white;
-			}
+				/* Custom button style */
+				.stButton>button {
+					background-color: #1abc9c; /* Teal */
+					color: black;
+					border-radius: 5px;
+					border: none;
+					padding: 10px 20px;
+					font-weight: bold;
+				}
+				.stButton>button:hover {
+					background-color: #16a085; /* Darker teal on hover */
+					color: black;
+				}
 
-			/* Info boxes */
-			.info-box {
-				background-color: #eafaf1; /* Light teal background */
-				border-left: 5px solid #1abc9c; /* Teal left border */
-				padding: 15px;
-				border-radius: 5px;
-				margin-bottom: 15px;
-				color: #2c3e50;
-			}
-			.info-box h3 {
-				color: #16a085; /* Darker teal for titles within info box */
-			}
-		</style>
-		""", unsafe_allow_html=True)
+				/* Info boxes */
+				.info-box {
+					background-color: #eafaf1; /* Light teal background */
+					border-left: 5px solid #1abc9c; /* Teal left border */
+					padding: 15px;
+					border-radius: 5px;
+					margin-bottom: 15px;
+					color: black;
+				}
+				.info-box h3 {
+					color: black; /* Darker teal for titles within info box */
+				}
+			</style> """, unsafe_allow_html=True)
 
 
 	def display_home(self):
